@@ -1,0 +1,33 @@
+# Virtual environments
+Include/
+Lib/
+Scripts/
+.venv/
+pyvenv.cfg
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# llama.cpp build artifacts
+llama.cpp/build/
+llama.cpp/*.exe
+llama.cpp/*.dll
+*.gguf
+*.bin
+
+# Temp / generated files
+temp/
+vectorstore/
+
+# Reports (comment out if you want to track them)
+# Reports/
+
+# OS
+.DS_Store
+Thumbs.db
