@@ -124,7 +124,8 @@ Financial **notes** (e.g. immobilisations tables, chiffre d'affaires) are extrac
 ### Stage 4 — Analytics & Chatbot
 
 - **Power BI** consumes the standardized output to analyze companies' net results and build interactive dashboards.
-- An **LLM-based chatbot (LLAMA 2)** enables document search and Q&A over the extracted financial knowledge base.
+- **`text.py`** — Streamlit interface that allows users to upload a financial document (PDF) and ask questions to get an explanation of its content, powered by LLAMA 2 via Ollama.
+- **`pdfextraction.py`** — Flask REST API exposing a conversational interface over financial documents using LangChain memory chains and the OpenAI API.
 
 ---
 
@@ -149,9 +150,47 @@ The OCR pipeline was benchmarked on two axes (measured on 30 CSV files, limited 
 | OCR & Layout | PaddleOCR (PP-OCR v4), layoutparser (PaddleDetectionLayoutModel, PubLayNet), pytesseract |
 | Deep Learning | TensorFlow (autoencoders for image enhancement) |
 | NLP / Embeddings | Hugging Face, Sentence Transformers, `all-MiniLM-L6-v2`, cross-encoder reranking, Semantic Search |
-| LLMs | GPT-4 API (notes extraction), LLAMA 2 (chatbot) |
+| LLMs | GPT-4 API (notes extraction), LLAMA 2 (chatbot), OpenAI API (conversational API) |
+| Chatbot / API | Streamlit (`text.py`), Flask + LangChain (`pdfextraction.py`), Ollama, FAISS |
 | Analytics | Power BI |
 | Output formats | CSV, JSON, XML |
+
+---
+
+## Project Structure
+
+```
+Financial-statement-automation/
+├── pdfextraction.py       # Flask API — conversational interface via LangChain + OpenAI
+├── text.py                # Streamlit app — upload a financial PDF and explain its content via LLAMA 2
+├── llama/                 # Submodule: Meta's LLaMA reference implementation
+├── llama.cpp/             # Submodule: C++ LLM inference engine (ggerganov/llama.cpp)
+├── Reports/               # Output reports directory
+├── .env                   # Environment variables (not tracked — see below)
+└── .gitignore
+```
+
+### Environment Variables (`.env`)
+
+Copy `.env` and fill in your values before running:
+
+```
+OPENAI_API_KEY=          # Required by pdfextraction.py
+FLASK_SECRET_KEY=        # Flask session security
+DATABASE_URL=            # SQLAlchemy connection string (default: sqlite:///app.db)
+HUGGINGFACE_API_TOKEN=   # Optional — for private HF models
+OLLAMA_BASE_URL=         # Ollama server URL (default: http://localhost:11434)
+```
+
+### Running the apps
+
+```bash
+# Streamlit PDF chatbot (text.py) — requires Ollama running with llama2
+streamlit run text.py
+
+# Flask conversational API (pdfextraction.py) — requires OPENAI_API_KEY
+python pdfextraction.py
+```
 
 ---
 
